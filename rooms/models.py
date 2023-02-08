@@ -11,7 +11,10 @@ class Room(CommonModel):
         PRIVATE_ROOM = ("private_room", "Private Room")
         SHARED_ROOM = "shared_room", "Shared Room"
 
-    name = models.CharField(max_length=180, default="")
+    name = models.CharField(
+        max_length=180,
+        default="",
+    )
     country = models.CharField(
         max_length=50,
         default="한국",
@@ -43,7 +46,7 @@ class Room(CommonModel):
         "rooms.Amenity",
         related_name="rooms",
     )
-    cateogry = models.ForeignKey(
+    category = models.ForeignKey(
         "categories.Category",
         null=True,
         blank=True,
@@ -51,8 +54,21 @@ class Room(CommonModel):
         related_name="rooms",
     )
 
-    def __str__(self):
-        return self.name
+    def __str__(room) -> str:
+        return room.name
+
+    def total_amenities(room):
+        return room.amenities.count()
+
+    def rating(room):
+        count = room.reviews.count()
+        if count == 0:
+            return "No Reviews"
+        else:
+            total_rating = 0
+            for review in room.reviews.all().values("rating"):
+                total_rating += review["rating"]
+            return round(total_rating / count, 2)
 
 
 class Amenity(CommonModel):
@@ -68,7 +84,7 @@ class Amenity(CommonModel):
         blank=True,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
